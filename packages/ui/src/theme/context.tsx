@@ -26,7 +26,7 @@ function ensureThemeStyleElement(): HTMLStyleElement {
 }
 
 function getSystemMode(): "light" | "dark" {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+  return "dark"
 }
 
 function applyThemeCss(theme: DesktopTheme, themeId: string, mode: "light" | "dark") {
@@ -71,34 +71,14 @@ export const { use: useTheme, provider: ThemeProvider } = createSimpleContext({
   init: (props: { defaultTheme?: string }) => {
     const [store, setStore] = createStore({
       themes: DEFAULT_THEMES as Record<string, DesktopTheme>,
-      themeId: props.defaultTheme ?? "oc-1",
-      colorScheme: "system" as ColorScheme,
-      mode: getSystemMode(),
+      themeId: "oc-1",
+      colorScheme: "dark" as ColorScheme,
+      mode: "dark" as const,
       previewThemeId: null as string | null,
       previewScheme: null as ColorScheme | null,
     })
 
     onMount(() => {
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
-      const handler = () => {
-        if (store.colorScheme === "system") {
-          setStore("mode", getSystemMode())
-        }
-      }
-      mediaQuery.addEventListener("change", handler)
-      onCleanup(() => mediaQuery.removeEventListener("change", handler))
-
-      const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME_ID)
-      const savedScheme = localStorage.getItem(STORAGE_KEYS.COLOR_SCHEME) as ColorScheme | null
-      if (savedTheme && store.themes[savedTheme]) {
-        setStore("themeId", savedTheme)
-      }
-      if (savedScheme) {
-        setStore("colorScheme", savedScheme)
-        if (savedScheme !== "system") {
-          setStore("mode", savedScheme)
-        }
-      }
       const currentTheme = store.themes[store.themeId]
       if (currentTheme) {
         cacheThemeVariants(currentTheme, store.themeId)
@@ -113,6 +93,10 @@ export const { use: useTheme, provider: ThemeProvider } = createSimpleContext({
     })
 
     const setTheme = (id: string) => {
+      if (id !== "oc-1") {
+        console.warn(`Theme "${id}" not available - PromptCode theme is enforced`)
+        return
+      }
       const theme = store.themes[id]
       if (!theme) {
         console.warn(`Theme "${id}" not found`)
@@ -124,9 +108,7 @@ export const { use: useTheme, provider: ThemeProvider } = createSimpleContext({
     }
 
     const setColorScheme = (scheme: ColorScheme) => {
-      setStore("colorScheme", scheme)
-      localStorage.setItem(STORAGE_KEYS.COLOR_SCHEME, scheme)
-      setStore("mode", scheme === "system" ? getSystemMode() : scheme)
+      console.warn("Color scheme switching is disabled - PromptCode light-blue theme is enforced")
     }
 
     return {

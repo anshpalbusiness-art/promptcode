@@ -1,4 +1,4 @@
-name: opencode
+name: promptcode
 
 on:
   issue_comment:
@@ -9,10 +9,10 @@ on:
 jobs:
   opencode:
     if: |
-      contains(github.event.comment.body, ' /oc') ||
-      startsWith(github.event.comment.body, '/oc') ||
-      contains(github.event.comment.body, ' /opencode') ||
-      startsWith(github.event.comment.body, '/opencode')
+      contains(github.event.comment.body, ' /pc') ||
+      startsWith(github.event.comment.body, '/pc') ||
+      contains(github.event.comment.body, ' /promptcode') ||
+      startsWith(github.event.comment.body, '/promptcode')
     runs-on: blacksmith-4vcpu-ubuntu-2404
     permissions:
       id-token: write
@@ -25,10 +25,10 @@ jobs:
 
       - uses: ./.github/actions/setup-bun
 
-      - name: Run opencode
-        uses: anomalyco/opencode/github@latest
+      - name: Run promptcode
+        uses: anshpalbusiness-art/promptcode/github@latest
         env:
-          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          OPENCODE_PERMISSION: '{"bash": "deny"}'
+          PROMPTCODE_API_KEY: ${{ secrets.PROMPTCODE_API_KEY }}
+          PROMPTCODE_PERMISSION: '{"bash": "deny"}'
         with:
-          model: opencode/claude-opus-4-5
+          model: promptcode/claude-opus-4-5

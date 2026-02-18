@@ -1,5 +1,5 @@
 {
-  "name": "@opencode-ai/util",
+  "name": "@promptcode/util",
   "version": "1.2.6",
   "private": true,
   "type": "module",
